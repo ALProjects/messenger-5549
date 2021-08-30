@@ -26,7 +26,7 @@ const Home = (props) => {
   }, [user.id]);
 
   useEffect(() => {
-    setTimeout(fetchConversations(), 5000);
+    fetchConversations();
   }, [conversations, fetchConversations]);
 
   if (!user.id) {
