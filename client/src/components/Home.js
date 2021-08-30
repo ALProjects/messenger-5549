@@ -16,7 +16,7 @@ const useStyles = makeStyles((theme) => ({
 
 const Home = (props) => {
   const classes = useStyles();
-  const { user, logout, fetchConversations } = props;
+  const { user, conversations, logout, fetchConversations } = props;
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
@@ -26,8 +26,8 @@ const Home = (props) => {
   }, [user.id]);
 
   useEffect(() => {
-    fetchConversations();
-  }, [fetchConversations]);
+    setTimeout(fetchConversations(), 5000);
+  }, [conversations, fetchConversations]);
 
   if (!user.id) {
     // If we were previously logged in, redirect to login instead of register
