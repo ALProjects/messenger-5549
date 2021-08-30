@@ -16,8 +16,9 @@ const useStyles = makeStyles((theme) => ({
 
 const Home = (props) => {
   const classes = useStyles();
-  const { user, conversations, logout, fetchConversations } = props;
+  const { user, messagesLength, logout, fetchConversations } = props;
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [messageLengthState, setMessageLengthState] = useState(-1);
 
   useEffect(() => {
     if (user.id) {
@@ -27,7 +28,15 @@ const Home = (props) => {
 
   useEffect(() => {
     fetchConversations();
-  }, [conversations, fetchConversations]);
+    setMessageLengthState(-1);
+  }, [messageLengthState, fetchConversations]);
+
+  useEffect(() => {
+    // If it is not greater than 0, that means that it is a new conversation and we do not want to change our message length state. This is so that we do not trigger a fetch conversation.
+    if (messagesLength > 0) {
+      setMessageLengthState(messagesLength)
+    }
+  }, [messagesLength])
 
   if (!user.id) {
     // If we were previously logged in, redirect to login instead of register
@@ -55,9 +64,17 @@ const Home = (props) => {
 };
 
 const mapStateToProps = (state) => {
+  // Every time a user sends a message, the messages length goes up. When this happens, we update the prop so that we know that there is a new message and we can sync them up across clients.
+  let messagesLength = 0;
+  for (let i = 0; i < state.conversations.length; i++) {
+    if (state.conversations[i].otherUser.username === state.activeConversation) {
+      messagesLength = state.conversations[i].messages.length;
+    }
+  }
   return {
     user: state.user,
-    conversations: state.conversations
+    conversations: state.conversations,
+    messagesLength: messagesLength
   };
 };
 
