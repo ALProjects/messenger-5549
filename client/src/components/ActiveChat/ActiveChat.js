@@ -35,7 +35,7 @@ const ActiveChat = (props) => {
           />
           <Box className={classes.chatContainer}>
             <Messages
-              messages={conversation.messages}
+              messages={conversation.messages.slice().reverse()}
               otherUser={conversation.otherUser}
               userId={user.id}
             />
