@@ -16,9 +16,8 @@ const useStyles = makeStyles((theme) => ({
 
 const Home = (props) => {
   const classes = useStyles();
-  const { user, messagesLength, logout, fetchConversations } = props;
+  const { user, logout, fetchConversations } = props;
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [messageLengthState, setMessageLengthState] = useState(-1);
 
   useEffect(() => {
     if (user.id) {
@@ -27,16 +26,9 @@ const Home = (props) => {
   }, [user.id]);
 
   useEffect(() => {
-    fetchConversations();
-    setMessageLengthState(-1);
-  }, [messageLengthState, fetchConversations]);
+    fetchConversations()
+  }, [fetchConversations]);
 
-  useEffect(() => {
-    // If it is not greater than 0, that means that it is a new conversation and we do not want to change our message length state. This is so that we do not trigger a fetch conversation.
-    if (messagesLength > 0) {
-      setMessageLengthState(messagesLength)
-    }
-  }, [messagesLength])
 
   if (!user.id) {
     // If we were previously logged in, redirect to login instead of register
