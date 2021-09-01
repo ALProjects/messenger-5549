@@ -26,7 +26,7 @@ const Home = (props) => {
   }, [user.id]);
 
   useEffect(() => {
-    fetchConversations()
+    fetchConversations();
   }, [fetchConversations]);
 
 
@@ -58,7 +58,7 @@ const Home = (props) => {
 const mapStateToProps = (state) => {
   return {
     user: state.user,
-    conversations: state.conversations,
+    conversations: state.conversations
   };
 };
 
