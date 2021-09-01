@@ -18,7 +18,7 @@ router.get("/", async (req, res, next) => {
           user2Id: userId,
         },
       },
-      attributes: ["id"],
+      attributes: ["id", "unread"],
       order: [[Message, "createdAt", "DESC"]],
       include: [
         { model: Message, order: ["createdAt", "DESC"] },
@@ -68,6 +68,8 @@ router.get("/", async (req, res, next) => {
       }
 
       // set properties for notification count and latest message preview
+      //convoJSON.unread++; we want to somehow update the unread count. Also want to only apply this for receiver
+      console.log(convoJSON)
       convoJSON.latestMessageText = convoJSON.messages[0].text;
       conversations[i] = convoJSON;
     }
