@@ -29,7 +29,6 @@ const Home = (props) => {
     fetchConversations();
   }, [fetchConversations]);
 
-
   if (!user.id) {
     // If we were previously logged in, redirect to login instead of register
     if (isLoggedIn) return <Redirect to="/login" />;
