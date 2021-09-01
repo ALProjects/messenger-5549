@@ -56,17 +56,9 @@ const Home = (props) => {
 };
 
 const mapStateToProps = (state) => {
-  // Every time a user sends a message, the messages length goes up. When this happens, we update the prop so that we know that there is a new message and we can sync them up across clients.
-  let messagesLength = 0;
-  for (let i = 0; i < state.conversations.length; i++) {
-    if (state.conversations[i].otherUser.username === state.activeConversation) {
-      messagesLength = state.conversations[i].messages.length;
-    }
-  }
   return {
     user: state.user,
     conversations: state.conversations,
-    messagesLength: messagesLength
   };
 };
 
