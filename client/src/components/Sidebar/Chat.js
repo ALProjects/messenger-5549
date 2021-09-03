@@ -1,8 +1,9 @@
-import React from "react";
-import { Box } from "@material-ui/core";
+import React, { useEffect } from "react";
+import { Badge, Box } from "@material-ui/core";
 import { BadgeAvatar, ChatContent } from "../Sidebar";
 import { makeStyles } from "@material-ui/core/styles";
 import { setActiveChat } from "../../store/activeConversation";
+import { resetUnreadCount } from "../../store/conversations"
 import { connect } from "react-redux";
 
 const useStyles = makeStyles((theme) => ({
@@ -26,6 +27,7 @@ const Chat = (props) => {
 
   const handleClick = async (conversation) => {
     await props.setActiveChat(conversation.otherUser.username);
+    await props.resetUnreadCount(conversation)
   };
 
   return (
@@ -37,6 +39,7 @@ const Chat = (props) => {
         sidebar={true}
       />
       <ChatContent conversation={conversation} />
+      <Badge color="primary" badgeContent={conversation.unreadCount} max={99} />
     </Box>
   );
 };
@@ -45,6 +48,9 @@ const mapDispatchToProps = (dispatch) => {
   return {
     setActiveChat: (id) => {
       dispatch(setActiveChat(id));
+    },
+    resetUnreadCount: (conversation) => {
+      dispatch(resetUnreadCount(conversation));
     }
   };
 };

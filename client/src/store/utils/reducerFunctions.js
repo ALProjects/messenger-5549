@@ -8,6 +8,9 @@ export const addMessageToStore = (state, payload) => {
       messages: [message],
     };
     newConvo.latestMessageText = message.text;
+    if (unread === true) {
+      newConvo.unreadCount = 1;
+    }
     return [newConvo, ...state];
   }
 
@@ -16,8 +19,11 @@ export const addMessageToStore = (state, payload) => {
       const convoCopy = { ...convo };
       convoCopy.messages.push(message);
       convoCopy.latestMessageText = message.text;
-      convoCopy.unreadCount = 0;
-      convoCopy.messages.forEach(message => { if (message.unread === true) { convoCopy.unreadCount++ } });
+      if (message.senderId === convo.otherUser.id) {
+        convoCopy.unreadCount++;
+      } else {
+        convoCopy.unreadCount = 0;
+      }
       return convoCopy;
     } else {
       return convo;
@@ -76,11 +82,25 @@ export const addNewConvoToStore = (state, recipientId, message) => {
       convoCopy.id = message.conversationId;
       convoCopy.messages.push(message);
       convoCopy.latestMessageText = message.text;
-      convoCopy.unreadCount = 0;
-      convoCopy.messages.forEach(message => { if (message.unread === true) { convoCopy.unreadCount++ } });
       return convoCopy;
     } else {
       return convo;
     }
   });
 };
+
+export const resetUnreadCounterForConvoInStore = (state, conversation) => {
+  return state.map((convo) => {
+    if (convo.id === conversation.id) {
+      const convoCopy = { ...convo }
+      convoCopy.id = conversation.id;
+      convoCopy.latestMessageText = conversation.latestMessageText;
+      convoCopy.messages.forEach(message => { if (message.unread === true && message.senderId === convo.otherUser.id) { message.unread = false } });
+      convoCopy.unreadCount = 0;
+      return convoCopy;
+    } else {
+      return convo;
+    }
+  });
+};
+
