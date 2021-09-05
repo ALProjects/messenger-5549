@@ -44,4 +44,24 @@ router.post("/", async (req, res, next) => {
   }
 });
 
+router.patch("/", async (req, res, next) => {
+  try {
+    if (!req.user) {
+      return res.sendStatus(401);
+    }
+    const { recipientId, conversationId } = req.body;
+
+    const messages = await Message.update({ unread: false }, {
+      where: {
+        unread: true,
+        senderId: recipientId,
+        conversationId: conversationId
+      }
+    });
+    res.json(messages)
+  } catch (error) {
+    next(error);
+  }
+})
+
 module.exports = router;
