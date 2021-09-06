@@ -30,6 +30,11 @@ const Chat = (props) => {
     await props.markAsRead(conversation);
   };
 
+  let unreadFlag = false;
+  if (conversation.unreadCount > 0) {
+    unreadFlag = true;
+  }
+
   return (
     <Box onClick={() => handleClick(conversation)} className={classes.root}>
       <BadgeAvatar
@@ -38,7 +43,7 @@ const Chat = (props) => {
         online={otherUser.online}
         sidebar={true}
       />
-      <ChatContent conversation={conversation} />
+      <ChatContent conversation={conversation} unreadFlag={unreadFlag} />
       <Badge color="primary" badgeContent={conversation.unreadCount} max={99} />
     </Box>
   );
