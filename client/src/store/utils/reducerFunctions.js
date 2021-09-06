@@ -95,6 +95,12 @@ export const resetUnreadCounterForConvoInStore = (state, conversation) => {
       const convoCopy = { ...convo }
       convoCopy.id = conversation.id;
       convoCopy.latestMessageText = conversation.latestMessageText;
+      convoCopy.messages.forEach(message => {
+        if (message.unread === true && message.senderId === convo.otherUser.id) {
+          message.unread = false
+          convoCopy.lastRead = message.id
+        }
+      });
       convoCopy.unreadCount = 0;
       return convoCopy;
     } else {
@@ -103,3 +109,22 @@ export const resetUnreadCounterForConvoInStore = (state, conversation) => {
   });
 };
 
+export const receiveUnreadCounter = (state, conversation) => {
+  return state.map((convo) => {
+    if (convo.id === conversation.id) {
+      const convoCopy = { ...convo }
+      convoCopy.id = conversation.id;
+      convoCopy.latestMessageText = conversation.latestMessageText;
+      convoCopy.messages.forEach(message => {
+        if (message.unread === true && message.senderId !== convo.otherUser.id) {
+          message.unread = false
+          convoCopy.lastRead = message.id
+        }
+      });
+      convoCopy.unreadCount = 0;
+      return convoCopy;
+    } else {
+      return convo;
+    }
+  });
+};

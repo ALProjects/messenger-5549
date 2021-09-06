@@ -38,6 +38,7 @@ const Input = (props) => {
     await postMessage(reqBody);
     const readBody = {
       id: conversationId,
+      latestMessageText: event.target.text.value,
       otherUser: {
         id: otherUser.id
       }

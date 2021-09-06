@@ -89,6 +89,17 @@ const patchReadStatus = async (body) => {
   return data;
 }
 
+const patchReadSocket = (arrayOfChangedData, body) => {
+  if (arrayOfChangedData[0] > 0) {
+    const conversation = {
+      id: body.id,
+      latestMessageText: body.latestMessageText,
+      messages: body.messages,
+    }
+    socket.emit("read-message", conversation);
+  }
+}
+
 const sendMessage = (data, body) => {
   socket.emit("new-message", {
     message: data.message,
@@ -116,12 +127,13 @@ export const postMessage = (body) => async (dispatch) => {
 
 export const markAsRead = (body) => async (dispatch) => {
   try {
+    dispatch(resetUnreadCount(body));
     const patchInformation = {
       conversationId: body.id,
       recipientId: body.otherUser.id,
     }
-    patchReadStatus(patchInformation);
-    dispatch(resetUnreadCount(body));
+    const data = await patchReadStatus(patchInformation);
+    patchReadSocket(data, body);
   } catch (error) {
     console.error(error);
   }

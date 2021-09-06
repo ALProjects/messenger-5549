@@ -56,7 +56,8 @@ router.patch("/", async (req, res, next) => {
         unread: true,
         senderId: recipientId,
         conversationId: conversationId
-      }
+      },
+      returning: true,
     });
     res.json(messages)
   } catch (error) {
