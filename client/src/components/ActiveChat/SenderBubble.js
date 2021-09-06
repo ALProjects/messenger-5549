@@ -37,28 +37,15 @@ const SenderBubble = (props) => {
   const classes = useStyles();
   const { id, time, text, otherUser, lastRead } = props;
 
-  if (id === lastRead) {
-    return (
-      <Box className={classes.root}>
-        <Typography className={classes.date}>{time}</Typography>
-        <Box className={classes.bubble}>
-          <Typography className={classes.text}>{text}</Typography>
-        </Box>
-        <Avatar alt={otherUser.username} src={otherUser.photoUrl} className={classes.avatar}></Avatar>
+  return (
+    <Box className={classes.root}>
+      <Typography className={classes.date}>{time}</Typography>
+      <Box className={classes.bubble}>
+        <Typography className={classes.text}>{text}</Typography>
       </Box>
-    );
-  } else {
-    return (
-      <Box className={classes.root}>
-        <Typography className={classes.date}>{time}</Typography>
-        <Box className={classes.bubble}>
-          <Typography className={classes.text}>{text}</Typography>
-        </Box>
-      </Box>
-    );
-  }
-
-
+      {id === lastRead && <Avatar alt={otherUser.username} src={otherUser.photoUrl} className={classes.avatar}></Avatar>}
+    </Box>
+  );
 };
 
 export default SenderBubble;

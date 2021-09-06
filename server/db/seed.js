@@ -44,7 +44,6 @@ async function seed() {
     conversationId: santaigoConvo.id,
     senderId: santiago.id,
     text: "Share photo of your city, please",
-    unread: true,
   });
 
   const chiumbo = await User.create({
@@ -62,7 +61,6 @@ async function seed() {
     conversationId: chiumboConvo.id,
     senderId: chiumbo.id,
     text: "Sure! What time?",
-    unread: true,
   });
 
   const hualing = await User.create({
@@ -82,7 +80,6 @@ async function seed() {
       conversationId: hualingConvo.id,
       senderId: hualing.id,
       text: "a test message",
-      unread: true,
     });
   }
 
@@ -90,7 +87,6 @@ async function seed() {
     conversationId: hualingConvo.id,
     senderId: hualing.id,
     text: "😂 😂 😂",
-    unread: true,
   });
 
   const otherUsers = await Promise.all([
