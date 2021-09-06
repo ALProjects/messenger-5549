@@ -72,9 +72,15 @@ router.get("/", async (req, res, next) => {
       convoJSON.messages.forEach(message => {
         if (message.unread === true && message.senderId === convoJSON.otherUser.id) {
           convoJSON.unreadCount++;
-          convoJSON.lastRead = message.id;
         }
       });
+      // Get the last thing the other user has read
+      for (let i = 0; i < convoJSON.messages.length; i++) {
+        if (convoJSON.messages[i].unread === false && convoJSON.messages[i].senderId !== convoJSON.otherUser.id) {
+          convoJSON.lastRead = convoJSON.messages[i].id;
+          break;
+        }
+      }
       convoJSON.latestMessageText = convoJSON.messages[0].text;
       conversations[i] = convoJSON;
     }
