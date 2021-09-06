@@ -89,18 +89,24 @@ export const addNewConvoToStore = (state, recipientId, message) => {
   });
 };
 
+const populateConvo = (conversation) => {
+  const convoCopy = { ...conversation }
+  console.log(conversation)
+  convoCopy.id = conversation.id;
+  convoCopy.latestMessageText = conversation.latestMessageText;
+  convoCopy.unreadCount = 0;
+  return convoCopy;
+}
+
 export const resetUnreadCounterForConvoInStore = (state, conversation) => {
   return state.map((convo) => {
     if (convo.id === conversation.id) {
-      const convoCopy = { ...convo }
-      convoCopy.id = conversation.id;
-      convoCopy.latestMessageText = conversation.latestMessageText;
+      const convoCopy = populateConvo(convo);
       convoCopy.messages.forEach(message => {
         if (message.unread === true && message.senderId === convo.otherUser.id) {
           message.unread = false
         }
       });
-      convoCopy.unreadCount = 0;
       return convoCopy;
     } else {
       return convo;
@@ -111,16 +117,13 @@ export const resetUnreadCounterForConvoInStore = (state, conversation) => {
 export const receiveUnreadCounter = (state, conversation) => {
   return state.map((convo) => {
     if (convo.id === conversation.id) {
-      const convoCopy = { ...convo }
-      convoCopy.id = conversation.id;
-      convoCopy.latestMessageText = conversation.latestMessageText;
+      const convoCopy = populateConvo(convo);
       convoCopy.messages.forEach(message => {
         if (message.unread === true && message.senderId !== convo.otherUser.id) {
           message.unread = false
           convoCopy.lastRead = message.id
         }
       });
-      convoCopy.unreadCount = 0;
       return convoCopy;
     } else {
       return convo;
