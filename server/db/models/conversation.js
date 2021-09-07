@@ -26,7 +26,7 @@ Conversation.findConversations = async function (arrayOfParticipantId) {
       conversationMap.set(conversation.id, conversationMap.get(conversation.id) + 1);
     } else {
       conversationMap.set(conversation.id, 1);
-      conversationArray.push(conversation.id);
+      conversationArray.push(conversation);
     }
   })
 
