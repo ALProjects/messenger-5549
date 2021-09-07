@@ -50,6 +50,15 @@ router.patch("/", async (req, res, next) => {
     }
     const { recipientId, conversationId } = req.body;
 
+    let conversation = await Conversation.findConversation(
+      req.user.id,
+      recipientId
+    );
+
+    if (conversation.id !== conversationId) {
+      return res.sendStatus(401);
+    }
+
     const messages = await Message.update({ unread: false }, {
       where: {
         unread: true,

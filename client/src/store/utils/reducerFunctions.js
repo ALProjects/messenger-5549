@@ -91,7 +91,6 @@ export const addNewConvoToStore = (state, recipientId, message) => {
 
 const populateConvo = (conversation) => {
   const convoCopy = { ...conversation }
-  console.log(conversation)
   convoCopy.id = conversation.id;
   convoCopy.latestMessageText = conversation.latestMessageText;
   convoCopy.unreadCount = 0;
