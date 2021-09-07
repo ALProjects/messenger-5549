@@ -12,7 +12,11 @@ const Message = db.define("message", {
   },
   unread: {
     type: Sequelize.BOOLEAN,
-    defaultValue: true,
+    allowNull: false,
+    defaultValue: true
+  },
+  recipientId: {
+    type: Sequelize.INTEGER,
     allowNull: false
   }
 });

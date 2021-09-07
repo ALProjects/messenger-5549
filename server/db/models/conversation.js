@@ -1,24 +1,43 @@
-const { Op } = require("sequelize");
+const { Op, Sequelize } = require("sequelize");
 const db = require("../db");
 
-const Conversation = db.define("conversation", {});
+const Conversation = db.define("conversation", {
+  participantId: {
+    type: Sequelize.INTEGER,
+    allowNull: false
+  }
+});
 
-// find conversation given two user Ids
+// find conversation given an array of user ids
 
-Conversation.findConversation = async function (user1Id, user2Id) {
-  const conversation = await Conversation.findOne({
-    where: {
-      user1Id: {
-        [Op.or]: [user1Id, user2Id]
-      },
-      user2Id: {
-        [Op.or]: [user1Id, user2Id]
+Conversation.findConversations = async function (arrayOfParticipantId) {
+  // A map to track how many people are in a conversation
+  let conversationMap = new Map();
+  let conversationArray = [];
+  let resultConversationArray = [];
+
+  arrayOfParticipantId.forEach(currentParticipantId => {
+    const conversation = await Conversation.findOne({
+      where: {
+        participantId: currentParticipantId,
       }
+    });
+    if (conversationMap.get(conversation.id)) {
+      conversationMap.set(conversation.id, conversationMap.get(conversation.id) + 1);
+    } else {
+      conversationMap.set(conversation.id, 1);
+      conversationArray.push(conversation.id);
     }
-  });
+  })
+
+  conversationArray.forEach(conversation => {
+    if (conversationMap.get(conversation.id) === arrayOfParticipantId.length) {
+      resultArray.push(conversation);
+    }
+  })
 
   // return conversation or null if it doesn't exist
-  return conversation;
+  return resultConversationArray;
 };
 
 module.exports = Conversation;
