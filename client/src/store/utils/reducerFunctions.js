@@ -102,7 +102,7 @@ export const resetUnreadCounterForConvoInStore = (state, conversation) => {
     if (convo.id === conversation.id) {
       const convoCopy = populateConvo(convo);
       convoCopy.messages.forEach(message => {
-        if (message.unread === true && message.senderId === convo.otherUser.id) {
+        if (message.unread && message.senderId === convo.otherUser.id) {
           message.unread = false
         }
       });
@@ -118,7 +118,7 @@ export const receiveUnreadCounter = (state, conversation) => {
     if (convo.id === conversation.id) {
       const convoCopy = populateConvo(convo);
       convoCopy.messages.forEach(message => {
-        if (message.unread === true && message.senderId !== convo.otherUser.id) {
+        if (message.unread && message.senderId !== convo.otherUser.id) {
           message.unread = false
           convoCopy.lastRead = message.id
         }

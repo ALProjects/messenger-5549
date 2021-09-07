@@ -89,8 +89,9 @@ const patchReadStatus = async (body) => {
   return data;
 }
 
-const patchReadSocket = (arrayOfChangedData, body) => {
-  if (arrayOfChangedData[0] > 0) {
+const patchReadSocket = (arrayOfPatchedMessages, body) => {
+  const numOfPatchedMessages = arrayOfPatchedMessages[0];
+  if (numOfPatchedMessages > 0) {
     const conversation = {
       id: body.id,
       latestMessageText: body.latestMessageText,

@@ -50,12 +50,13 @@ router.patch("/", async (req, res, next) => {
     }
     const { recipientId, conversationId } = req.body;
 
-    let conversation = await Conversation.findConversation(
-      req.user.id,
-      recipientId
-    );
+    let conversation = await Conversation.findOne({
+      where: {
+        id: conversationId,
+      }
+    });
 
-    if (conversation.id !== conversationId) {
+    if (req.user.id !== conversation.user1Id && req.user.id !== conversation.user2Id) {
       return res.sendStatus(401);
     }
 
