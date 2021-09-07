@@ -43,4 +43,35 @@ router.post("/", async (req, res, next) => {
   }
 });
 
+router.patch("/", async (req, res, next) => {
+  try {
+    if (!req.user) {
+      return res.sendStatus(401);
+    }
+    const { recipientId, conversationId } = req.body;
+
+    let conversation = await Conversation.findOne({
+      where: {
+        id: conversationId,
+      }
+    });
+
+    if (req.user.id !== conversation.user1Id && req.user.id !== conversation.user2Id) {
+      return res.sendStatus(401);
+    }
+
+    const messages = await Message.update({ unread: false }, {
+      where: {
+        unread: true,
+        senderId: recipientId,
+        conversationId: conversationId
+      },
+      returning: true,
+    });
+    res.json(messages)
+  } catch (error) {
+    next(error);
+  }
+})
+
 module.exports = router;

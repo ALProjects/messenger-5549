@@ -1,5 +1,5 @@
 export const addMessageToStore = (state, payload) => {
-  const { message, sender } = payload;
+  const { message, sender, unread } = payload;
   // if sender isn't null, that means the message needs to be put in a brand new convo
   if (sender !== null) {
     const newConvo = {
@@ -8,14 +8,22 @@ export const addMessageToStore = (state, payload) => {
       messages: [message],
     };
     newConvo.latestMessageText = message.text;
+    if (unread === true) {
+      newConvo.unreadCount = 1;
+    }
     return [newConvo, ...state];
   }
 
   return state.map((convo) => {
     if (convo.id === message.conversationId) {
-      const convoCopy = { ...convo }
+      const convoCopy = { ...convo };
       convoCopy.messages.push(message);
       convoCopy.latestMessageText = message.text;
+      if (message.senderId === convo.otherUser.id) {
+        convoCopy.unreadCount++;
+      } else {
+        convoCopy.unreadCount = 0;
+      }
       return convoCopy;
     } else {
       return convo;
@@ -74,6 +82,47 @@ export const addNewConvoToStore = (state, recipientId, message) => {
       convoCopy.id = message.conversationId;
       convoCopy.messages.push(message);
       convoCopy.latestMessageText = message.text;
+      return convoCopy;
+    } else {
+      return convo;
+    }
+  });
+};
+
+const populateConvo = (conversation) => {
+  const convoCopy = { ...conversation }
+  convoCopy.id = conversation.id;
+  convoCopy.latestMessageText = conversation.latestMessageText;
+  convoCopy.unreadCount = 0;
+  return convoCopy;
+}
+
+export const resetUnreadCounterForConvoInStore = (state, conversation) => {
+  return state.map((convo) => {
+    if (convo.id === conversation.id) {
+      const convoCopy = populateConvo(convo);
+      convoCopy.messages.forEach(message => {
+        if (message.unread && message.senderId === convo.otherUser.id) {
+          message.unread = false
+        }
+      });
+      return convoCopy;
+    } else {
+      return convo;
+    }
+  });
+};
+
+export const receiveUnreadCounter = (state, conversation) => {
+  return state.map((convo) => {
+    if (convo.id === conversation.id) {
+      const convoCopy = populateConvo(convo);
+      convoCopy.messages.forEach(message => {
+        if (message.unread && message.senderId !== convo.otherUser.id) {
+          message.unread = false
+          convoCopy.lastRead = message.id
+        }
+      });
       return convoCopy;
     } else {
       return convo;

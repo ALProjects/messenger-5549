@@ -5,6 +5,7 @@ import {
   addConversation,
   setNewMessage,
   setSearchedUsers,
+  resetUnreadCount,
 } from "../conversations";
 import { gotUser, setFetchingStatus } from "../user";
 
@@ -83,6 +84,23 @@ const saveMessage = async (body) => {
   return data;
 };
 
+const patchReadStatus = async (body) => {
+  const { data } = await axios.patch("/api/messages", body);
+  return data;
+}
+
+const patchReadSocket = (arrayOfPatchedMessages, body) => {
+  const numOfPatchedMessages = arrayOfPatchedMessages[0];
+  if (numOfPatchedMessages > 0) {
+    const conversation = {
+      id: body.id,
+      latestMessageText: body.latestMessageText,
+      messages: body.messages,
+    }
+    socket.emit("read-message", conversation);
+  }
+}
+
 const sendMessage = (data, body) => {
   socket.emit("new-message", {
     message: data.message,
@@ -107,6 +125,20 @@ export const postMessage = (body) => async (dispatch) => {
     console.error(error);
   }
 };
+
+export const markAsRead = (body) => async (dispatch) => {
+  try {
+    dispatch(resetUnreadCount(body));
+    const patchInformation = {
+      conversationId: body.id,
+      recipientId: body.otherUser.id,
+    }
+    const data = await patchReadStatus(patchInformation);
+    patchReadSocket(data, body);
+  } catch (error) {
+    console.error(error);
+  }
+}
 
 export const searchUsers = (searchTerm) => async (dispatch) => {
   try {
